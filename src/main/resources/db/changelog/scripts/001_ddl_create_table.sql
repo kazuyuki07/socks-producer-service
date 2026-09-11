@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS producers (
+CREATE TABLE IF NOT EXISTS producer (
     id SERIAL PRIMARY KEY,
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(40) NOT NULL,

@@ -8,7 +8,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import su.yuk1chan.producerservice.dto.PagedResponse;
 import su.yuk1chan.producerservice.dto.ProducersDTO;
-import su.yuk1chan.producerservice.entity.Producers;
+import su.yuk1chan.producerservice.entity.Producer;
+import su.yuk1chan.producerservice.enums.ProducerSort;
 import su.yuk1chan.producerservice.enums.Status;
 import su.yuk1chan.producerservice.mapper.ProducerMapper;
 import su.yuk1chan.producerservice.repository.ProducersRepository;
@@ -22,8 +23,8 @@ public class ProducerService {
     private final ProducersRepository producersRepository;
     private final ProducerMapper producerMapper;
 
-    public Producers addProducer(ProducersDTO producersDTO) {
-        Producers producers = Producers.builder()
+    public Producer addProducer(ProducersDTO producersDTO) {
+        Producer producers = Producer.builder()
                 .firstName(producersDTO.getFirstName())
                 .lastName(producersDTO.getLastName())
                 .company(producersDTO.getCompany())
@@ -47,9 +48,10 @@ public class ProducerService {
             List<String> company,
             List<String> phoneNumber,
             List<String> email,
-            Status status
+            Status status,
+            String sort
     ) {
-        Specification<Producers> producersSpecification = Specification.where(
+        Specification<Producer> producersSpecification = Specification.where(
                 ProducerSpecification.firstNameFilter(firstName)
                         .and(ProducerSpecification.lastNameFilter(lastName))
                         .and(ProducerSpecification.companyFilter(company))
@@ -58,12 +60,26 @@ public class ProducerService {
                         .and(ProducerSpecification.statusFilter(status))
         );
 
-        Page<Producers> producers = producersRepository.findAll(producersSpecification,
-                PageRequest.of(page, size)
+        ProducerSort producerSort = ProducerSort.of(sort);
+        Sort sorted = Sort.by(
+                producerSort.getDirection(),
+                producerSort.getEntityValue()
+        );
+
+        Page<Producer> producers = producersRepository.findAll(producersSpecification,
+                PageRequest.of(page, size, sorted)
         );
 
         return PagedResponse.from(producers
                 .map(producerMapper::producersToProducersDto)
         );
+    }
+
+    public void partUpdateProducer() {
+        // ...
+    }
+
+    public void fullUpdateProducer() {
+        // ...
     }
 }

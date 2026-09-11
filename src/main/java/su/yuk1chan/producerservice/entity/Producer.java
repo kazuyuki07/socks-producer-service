@@ -12,8 +12,8 @@ import su.yuk1chan.producerservice.enums.Status;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "producers")
-public class Producers {
+@Table(name = "producer")
+public class Producer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -26,7 +26,7 @@ public class ProducersDTO {
     )
     private String phoneNumber;
 
-    @Email(message = "Поле с почтой - не почта")
+    @Email(message = "Email-адрес некорректен")
     @NotBlank(message = "Почта не может быть пустой")
     private String email;
 

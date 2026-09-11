@@ -1,3 +1,18 @@
 spring:
   application:
     name: ProducerService
+
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:3432/producer_service
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog.yaml
+    enabled: true
+    drop-first: false
+    default-schema: public
+
+server:
+  port: 5080
