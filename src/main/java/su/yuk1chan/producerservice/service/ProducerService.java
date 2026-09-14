@@ -7,12 +7,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import su.yuk1chan.producerservice.dto.PagedResponse;
-import su.yuk1chan.producerservice.dto.ProducersDTO;
+import su.yuk1chan.producerservice.dto.ProducerDTO;
+import su.yuk1chan.producerservice.dto.ProducerPatchDTO;
 import su.yuk1chan.producerservice.entity.Producer;
 import su.yuk1chan.producerservice.enums.ProducerSort;
 import su.yuk1chan.producerservice.enums.Status;
+import su.yuk1chan.producerservice.exceptions.NotFoundException;
 import su.yuk1chan.producerservice.mapper.ProducerMapper;
-import su.yuk1chan.producerservice.repository.ProducersRepository;
+import su.yuk1chan.producerservice.repository.ProducerRepository;
 import su.yuk1chan.producerservice.repository.specification.ProducerSpecification;
 
 import java.util.List;
@@ -20,43 +22,53 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ProducerService {
-    private final ProducersRepository producersRepository;
+    private final ProducerRepository producerRepository;
     private final ProducerMapper producerMapper;
 
-    public Producer addProducer(ProducersDTO producersDTO) {
+    public Producer addProducer(ProducerDTO producerDTO) {
         Producer producers = Producer.builder()
-                .firstName(producersDTO.getFirstName())
-                .lastName(producersDTO.getLastName())
-                .company(producersDTO.getCompany())
-                .email(producersDTO.getEmail())
-                .phoneNumber(producersDTO.getPhoneNumber())
-                .status(producersDTO.getStatus())
+                .firstName(producerDTO.getFirstName())
+                .lastName(producerDTO.getLastName())
+                .company(producerDTO.getCompany())
+                .email(producerDTO.getEmail())
+                .phoneNumber(producerDTO.getPhoneNumber())
+                .status(producerDTO.getStatus())
                 .build();
 
-        return producersRepository.save(producers);
+        return producerRepository.save(producers);
     }
 
     public void deleteProducer(Long id) {
-        producersRepository.deleteById(id);
+        producerRepository.deleteById(id);
     }
 
-    public PagedResponse<ProducersDTO> getProducers(
+    public PagedResponse<ProducerDTO> getProducers(
             Integer page,
             Integer size,
-            List<String> firstName,
-            List<String> lastName,
-            List<String> company,
-            List<String> phoneNumber,
-            List<String> email,
+            String firstName,
+            List<String> firstNames,
+            String lastName,
+            List<String> lastNames,
+            String company,
+            List<String> companies,
+            String phoneNumber,
+            List<String> phoneNumbers,
+            String email,
+            List<String> emails,
             Status status,
             String sort
     ) {
         Specification<Producer> producersSpecification = Specification.where(
                 ProducerSpecification.firstNameFilter(firstName)
+                        .and(ProducerSpecification.firstNamesFilter(firstNames))
                         .and(ProducerSpecification.lastNameFilter(lastName))
+                        .and(ProducerSpecification.lastNamesFilter(lastNames))
                         .and(ProducerSpecification.companyFilter(company))
+                        .and(ProducerSpecification.companiesFilter(companies))
                         .and(ProducerSpecification.phoneNumberFilter(phoneNumber))
+                        .and(ProducerSpecification.phoneNumbersFilter(phoneNumbers))
                         .and(ProducerSpecification.emailFilter(email))
+                        .and(ProducerSpecification.emailsFilter(emails))
                         .and(ProducerSpecification.statusFilter(status))
         );
 
@@ -66,7 +78,7 @@ public class ProducerService {
                 producerSort.getEntityValue()
         );
 
-        Page<Producer> producers = producersRepository.findAll(producersSpecification,
+        Page<Producer> producers = producerRepository.findAll(producersSpecification,
                 PageRequest.of(page, size, sorted)
         );
 
@@ -75,11 +87,21 @@ public class ProducerService {
         );
     }
 
-    public void partUpdateProducer() {
-        // ...
+    public Producer fullUpdateProducer(Long id, ProducerDTO updatedProducer) {
+        Producer foundProducer = producerRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Не найден поставщик " + id));
+
+        producerMapper.fullUpdateProducer(updatedProducer, foundProducer);
+
+        return producerRepository.save(foundProducer);
     }
 
-    public void fullUpdateProducer() {
-        // ...
+    public Producer partUpdateProducer(Long id, ProducerPatchDTO patchedProducer) {
+        Producer foundProducer = producerRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Не найден поставщик " + id));
+
+        producerMapper.patchProducerUpdate(patchedProducer, foundProducer);
+
+        return producerRepository.save(foundProducer);
     }
 }

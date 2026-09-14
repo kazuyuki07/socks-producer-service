@@ -4,5 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import su.yuk1chan.producerservice.entity.Producer;
 
-public interface ProducersRepository extends JpaRepository<Producer, Long>, JpaSpecificationExecutor<Producer> {
+public interface ProducerRepository extends JpaRepository<Producer, Long>, JpaSpecificationExecutor<Producer> {
 }

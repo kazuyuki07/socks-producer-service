@@ -9,7 +9,7 @@ import su.yuk1chan.producerservice.enums.Status;
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProducersDTO {
+public class ProducerDTO {
     @NotBlank(message = "Имя не может быть пустой")
     private String firstName;
 
