@@ -34,10 +34,9 @@ public class ProducerController {
     }
 
     @DeleteMapping("/{producerId}")
-    @ResponseStatus(HttpStatus.OK)
-    public String deleteProducer(@PathVariable Long producerId) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteProducer(@PathVariable Long producerId) {
         producerService.deleteProducer(producerId);
-        return "Поставщик удален";
     }
 
     @GetMapping
