@@ -1,6 +1,5 @@
 package su.yuk1chan.producerservice.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +20,7 @@ public class ProducerController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ProducerDTO addProducer(@Valid @RequestBody ProducerDTO producerDTO) {
+    public ProducerDTO addProducer(@RequestBody ProducerDTO producerDTO) {
         Producer producer = producerService.addProducer(producerDTO);
         return new ProducerDTO(
                 producer.getFirstName(),
@@ -79,7 +78,7 @@ public class ProducerController {
     @ResponseStatus(HttpStatus.OK)
     public ProducerDTO fullUpdateProducer(
             @PathVariable Long producerId,
-            @Valid @RequestBody ProducerDTO updatedProducer) {
+            @RequestBody ProducerDTO updatedProducer) {
         Producer updateProducerResult = producerService.fullUpdateProducer(producerId, updatedProducer);
 
         return new ProducerDTO(
@@ -96,7 +95,7 @@ public class ProducerController {
     @ResponseStatus(HttpStatus.OK)
     public ProducerDTO partUpdateProducer(
             @PathVariable Long producerId,
-            @Valid @RequestBody ProducerPatchDTO patchedProducer) {
+            @RequestBody ProducerPatchDTO patchedProducer) {
         Producer updateProducerResult = producerService.partUpdateProducer(producerId, patchedProducer);
 
         return new ProducerDTO(
